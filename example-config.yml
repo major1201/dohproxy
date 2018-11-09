@@ -1,0 +1,31 @@
+---
+listen:
+  - type: udp
+    address: 127.0.0.1:53
+  - type: tcp
+    address: 127.0.0.1:53
+
+upstreams:
+  google-public:
+    type: dns
+    address: 8.8.8.8:53
+  my-corp-dns:
+    type: dns
+    address: 192.168.53.1:53
+  doh-get-with-proxy:
+    type: doh-get
+    address: https://cloudflare-dns.com/dns-query
+    proxy: socks5://127.0.0.1:1080
+  doh-post:
+    type: doh-post
+    address: https://cloudflare-dns.com/dns-query
+
+rules:
+  - fqdn:cloudflare-dns.com      google-public
+  - fqdn:www.my-dev-server.com   10.0.31.1
+  - keyword:mycorp.com           my-corp-dns
+  - suffix:mybiz.com             my-corp-dns
+  - suffix:never-response.com    blackhole
+  - suffix:adxxx.com             reject
+  - wildcard:*                   doh-post
+...
