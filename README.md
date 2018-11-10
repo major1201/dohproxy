@@ -25,6 +25,22 @@ Start dohproxy with a custom config path
 dohproxy -c /home/major1201/my-doh-config.yml
 ```
 
+Service
+
+```bash
+# install as a service
+dohproxy -c /home/major1201/my-doh-config.yml --service install
+
+# start the service
+dohproxy --service start
+
+# stop the service
+dohproxy --service stop
+
+# uninstall the service
+dohproxy --service uninstall
+```
+
 ## Configuration
 
 ```yml

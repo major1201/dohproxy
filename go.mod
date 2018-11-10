@@ -2,6 +2,7 @@ module github.com/major1201/dohproxy
 
 require (
 	github.com/go-yaml/yaml v2.1.0+incompatible
+	github.com/kardianos/service v0.0.0-20180910224244-b1866cf76903
 	github.com/major1201/goutils v0.2.0
 	github.com/miekg/dns v1.0.14
 	github.com/stretchr/testify v1.2.1
@@ -12,6 +13,7 @@ require (
 	golang.org/x/crypto v0.0.0-20181030102418-4d3f4d9ffa16 // indirect
 	golang.org/x/lint v0.0.0-20181026193005-c67002cb31c3 // indirect
 	golang.org/x/net v0.0.0-20181102050134-b7e296877c6e
+	golang.org/x/sys v0.0.0-20181107165924-66b7b1311ac8 // indirect
 	golang.org/x/text v0.3.0 // indirect
 	golang.org/x/tools v0.0.0-20181107225058-a28dfb48e06b // indirect
 	gopkg.in/yaml.v2 v2.2.1

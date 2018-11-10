@@ -1,6 +1,10 @@
 package main
 
-import "github.com/urfave/cli"
+import (
+	"github.com/kardianos/service"
+	"github.com/urfave/cli"
+	"strings"
+)
 
 func getApp() *cli.App {
 	app := cli.NewApp()
@@ -18,6 +22,14 @@ func getApp() *cli.App {
 			Name:  "config, c",
 			Usage: "set config file",
 			Value: "/etc/dohproxy.yml",
+		},
+		cli.StringFlag{
+			Name:  "service, s",
+			Usage: "service " + strings.Join(service.ControlAction[:], ","),
+		},
+		cli.BoolFlag{
+			Name:   "from-service",
+			Hidden: true,
 		},
 	}
 	app.Action = func(c *cli.Context) error {
