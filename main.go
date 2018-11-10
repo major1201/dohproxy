@@ -54,7 +54,6 @@ func initLog(stdout, stderr string, level zapcore.Level) {
 	}.Build()
 	defer logger.Sync()
 	zap.ReplaceGlobals(logger)
-	logger.Info("logger initialized")
 }
 
 func runApp(c *cli.Context) {

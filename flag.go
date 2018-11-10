@@ -10,7 +10,7 @@ func getApp() *cli.App {
 	app := cli.NewApp()
 	app.Name = "dohproxy"
 	app.HelpName = app.Name
-	app.Usage = "dohproxy -c config_file]"
+	app.Usage = "dohproxy -c config_file"
 	app.Version = AppVer
 	app.Flags = []cli.Flag{
 		cli.BoolFlag{

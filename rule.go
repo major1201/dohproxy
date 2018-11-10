@@ -91,33 +91,33 @@ type RegexRule struct {
 }
 
 // Matches returns if the address matches the FQDN rule
-func (r *FQDNRule) Matches(address string) bool {
-	return strings.TrimSuffix(r.expression, ".") == strings.TrimSuffix(strings.ToLower(address), ".")
+func (rule *FQDNRule) Matches(address string) bool {
+	return strings.TrimSuffix(rule.expression, ".") == strings.TrimSuffix(strings.ToLower(address), ".")
 }
 
 // Matches returns if the address matches the prefix rule
-func (r *PrefixRule) Matches(address string) bool {
-	return strings.HasPrefix(fillBothDots(strings.ToLower(address)), fillBothDots(r.expression))
+func (rule *PrefixRule) Matches(address string) bool {
+	return strings.HasPrefix(fillBothDots(strings.ToLower(address)), fillBothDots(rule.expression))
 }
 
 // Matches returns if the address matches the suffix rule
-func (r *SuffixRule) Matches(address string) bool {
-	return strings.HasSuffix(fillBothDots(strings.ToLower(address)), fillBothDots(r.expression))
+func (rule *SuffixRule) Matches(address string) bool {
+	return strings.HasSuffix(fillBothDots(strings.ToLower(address)), fillBothDots(rule.expression))
 }
 
 // Matches returns if the address matches the keyword rule
-func (r *KeywordRule) Matches(address string) bool {
-	return strings.Index(strings.ToLower(address), r.expression) >= 0
+func (rule *KeywordRule) Matches(address string) bool {
+	return strings.Index(strings.ToLower(address), rule.expression) >= 0
 }
 
 // Matches returns if the address matches the wildcard rule
-func (r *WildcardRule) Matches(address string) bool {
-	return wildcard.Match(r.expression, strings.ToLower(address))
+func (rule *WildcardRule) Matches(address string) bool {
+	return wildcard.Match(rule.expression, strings.ToLower(address))
 }
 
 // Matches returns if the address matches the regex rule
-func (r *RegexRule) Matches(address string) bool {
-	return r.regex.MatchString(strings.ToLower(address))
+func (rule *RegexRule) Matches(address string) bool {
+	return rule.regex.MatchString(strings.ToLower(address))
 }
 
 // AddRule converts a rule in raw string into Rule and appends it the handler rules
