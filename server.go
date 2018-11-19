@@ -4,6 +4,7 @@ import (
 	"github.com/go-yaml/yaml"
 	"github.com/miekg/dns"
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 	"net/url"
 	"os"
 	"time"
@@ -89,9 +90,17 @@ func (s *TCPServer) Type() string {
 
 // Config describes the config file
 type Config struct {
+	Log       *LogConfig
 	Listen    []map[string]string
 	Upstreams map[string]map[string]string
 	Rules     []string
+}
+
+// LogConfig describes the log config structure
+type LogConfig struct {
+	Stdout string
+	Stderr string
+	Level  string
 }
 
 func checkMapAttrs(m map[string]string, parentKey string, keys ...string) {
@@ -101,6 +110,43 @@ func checkMapAttrs(m map[string]string, parentKey string, keys ...string) {
 		}
 	}
 
+}
+
+func reloadLogConfig(logConfig *LogConfig) {
+	if logConfig == nil {
+		return
+	}
+
+	stdout := "stdout"
+	stderr := "stderr"
+	level := zapcore.DebugLevel
+
+	if logConfig.Stdout != "" {
+		stdout = logConfig.Stdout
+	}
+	if logConfig.Stderr != "" {
+		stderr = logConfig.Stderr
+	}
+	if logConfig.Level != "" {
+		logLevelMap := map[string]zapcore.Level{
+			"debug":   zapcore.DebugLevel,
+			"info":    zapcore.InfoLevel,
+			"warn":    zapcore.WarnLevel,
+			"warning": zapcore.WarnLevel,
+			"error":   zapcore.ErrorLevel,
+			"dpanic":  zapcore.DPanicLevel,
+			"panic":   zapcore.PanicLevel,
+			"fatal":   zapcore.FatalLevel,
+		}
+		if logLevel, ok := logLevelMap[logConfig.Level]; ok {
+			level = logLevel
+		} else {
+			zap.L().Named("config").Fatal("unknown log level", zap.String("log.level", logConfig.Level))
+		}
+	}
+
+	zap.L().Info("log config reloading", zap.String("stdout", stdout), zap.String("stderr", stderr), zap.Int("level", int(level)))
+	initLog(stdout, stderr, level)
 }
 
 // LoadServersFromConfig loads the config file in YAML format into Server slice objects
@@ -116,6 +162,9 @@ func LoadServersFromConfig(configPath string) []Server {
 
 	configMap := &Config{}
 	yaml.NewDecoder(yamlFile).Decode(configMap)
+
+	// log
+	reloadLogConfig(configMap.Log)
 
 	// upstreams
 	handler := &Handler{

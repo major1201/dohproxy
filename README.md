@@ -44,6 +44,11 @@ dohproxy --service uninstall
 ## Configuration
 
 ```yml
+log:
+  stdout: stdout                  # default: stdout, log-to-file on Windows is not supported
+  stderr: /var/log/dohproxy.err   # default: stderr, log-to-file on Windows is not supported
+  level: info                     # default: debug, choices: debug, info, warn(warning), error, dpanic, panic, fatal
+
 listen:
   - type: udp
     address: 127.0.0.1:53
