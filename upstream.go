@@ -131,7 +131,7 @@ func (upstream *UpstreamDoh) dohQuery(w dns.ResponseWriter, req *dns.Msg, method
 	var httpReq *http.Request
 	switch method {
 	case "GET":
-		base64str := base64.StdEncoding.EncodeToString(msg)
+		base64str := base64.RawURLEncoding.EncodeToString(msg)
 		httpReq, err = http.NewRequest("GET", u.String()+"?dns="+base64str, bytes.NewBuffer(msg))
 	case "POST":
 		httpReq, err = http.NewRequest("POST", u.String(), bytes.NewBuffer(msg))
