@@ -97,6 +97,10 @@ rule format: `[fqdn|prefix|suffix|keyword|wildcard|regex]:expression upstream|bl
 - blackhole: it never response to any dns requests, it just does nothing
 - reject: returns error immediately
 
+## Known Issues
+
+- The `log.stdout` and `log.stderr` part in config file only support `stdout` on Windows platform, due to `zap` package limit
+
 ## Contributing
 
 Just fork the repository and open a pull request with your changes.
