@@ -146,6 +146,7 @@ func (upstream *UpstreamDoh) dohQuery(w dns.ResponseWriter, req *dns.Msg, method
 		return
 	}
 	httpReq.Header.Add("Content-Type", "application/dns-message")
+	httpReq.Header.Set("Connection", "close")
 	httpReq.Host = u.Hostname()
 
 	httpResp, err := client.Do(httpReq)

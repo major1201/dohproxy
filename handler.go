@@ -15,6 +15,8 @@ type Handler struct {
 
 // ServeDNS actually handle the DNS requests
 func (handler *Handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
+	defer w.Close()
+
 	isMatched := false
 	ruleSearchStartTime := time.Now()
 
