@@ -151,13 +151,15 @@ func reloadLogConfig(logConfig *LogConfig) {
 
 // LoadServersFromConfig loads the config file in YAML format into Server slice objects
 func LoadServersFromConfig(configPath string) []Server {
-	zap.L().Named("config").Info("reading config file", zap.String("filename", configPath))
+	logger := zap.L().Named("config")
+
+	logger.Info("reading config file", zap.String("filename", configPath))
 	startTime := time.Now()
 
 	yamlFile, err := os.Open(configPath)
 	defer yamlFile.Close()
 	if err != nil {
-		zap.L().Named("config").Fatal("can't open config file", zap.String("filename", configPath))
+		logger.Fatal("can't open config file", zap.String("filename", configPath))
 	}
 
 	configMap := &Config{}
@@ -198,7 +200,7 @@ func LoadServersFromConfig(configPath string) []Server {
 			if proxyStr, ok := upstreamConfig["proxy"]; ok {
 				proxyURL, err := url.Parse(proxyStr)
 				if err != nil {
-					zap.L().Named("config").Fatal("upstream proxy url parse error", zap.String("upstream name", name), zap.String("proxy", proxyStr))
+					logger.Fatal("upstream proxy url parse error", zap.String("upstream name", name), zap.String("proxy", proxyStr))
 				}
 				upstream.proxy = proxyURL
 			}
@@ -215,13 +217,13 @@ func LoadServersFromConfig(configPath string) []Server {
 			if proxyStr, ok := upstreamConfig["proxy"]; ok {
 				proxyURL, err := url.Parse(proxyStr)
 				if err != nil {
-					zap.L().Named("config").Fatal("upstream proxy url parse error", zap.String("upstream name", name), zap.String("proxy", proxyStr))
+					logger.Fatal("upstream proxy url parse error", zap.String("upstream name", name), zap.String("proxy", proxyStr))
 				}
 				upstream.proxy = proxyURL
 			}
 			handler.Upstreams[name] = upstream
 		default:
-			zap.L().Named("config").Fatal("unknown upstream type", zap.String("type", upstreamConfig["type"]))
+			logger.Fatal("unknown upstream type", zap.String("type", upstreamConfig["type"]))
 		}
 	}
 
@@ -253,11 +255,11 @@ func LoadServersFromConfig(configPath string) []Server {
 			}
 			servers = append(servers, server)
 		default:
-			zap.L().Named("config").Fatal("unknown listen type", zap.String("type", serverConfig["type"]))
+			logger.Fatal("unknown listen type", zap.String("type", serverConfig["type"]))
 		}
 	}
 
-	zap.L().Named("config").Info("config file read",
+	logger.Info("config file read",
 		zap.Duration("duration", time.Since(startTime)),
 		zap.Int("servers", len(servers)),
 		zap.Int("upstreams", len(configMap.Upstreams)),

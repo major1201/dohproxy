@@ -99,9 +99,11 @@ func (upstream *UpstreamReject) Name() string {
 }
 
 func (upstream *UpstreamDoh) dohQuery(w dns.ResponseWriter, req *dns.Msg, method string) {
+	logger := zap.L().Named("answer").With(zap.Uint16("id", req.Id))
+
 	u, err := url.Parse(upstream.address)
 	if err != nil {
-		zap.L().Named("answer").Fatal("doh url parse error", zap.Uint16("id", req.Id), zap.Error(err))
+		logger.Fatal("doh url parse error", zap.Error(err))
 	}
 
 	// Update TLS and HTTP client configuration
@@ -124,7 +126,7 @@ func (upstream *UpstreamDoh) dohQuery(w dns.ResponseWriter, req *dns.Msg, method
 	// start
 	msg, err := req.Pack()
 	if err != nil {
-		zap.L().Named("answer").Error("doh pack message error", zap.Uint16("id", req.Id), zap.Error(err))
+		logger.Error("doh pack message error", zap.Error(err))
 		return
 	}
 
@@ -140,7 +142,7 @@ func (upstream *UpstreamDoh) dohQuery(w dns.ResponseWriter, req *dns.Msg, method
 	}
 
 	if err != nil {
-		zap.L().Named("answer").Error("doh req err", zap.Uint16("id", req.Id), zap.Error(err))
+		logger.Error("doh req err", zap.Error(err))
 		return
 	}
 	httpReq.Header.Add("Content-Type", "application/dns-message")
@@ -148,7 +150,7 @@ func (upstream *UpstreamDoh) dohQuery(w dns.ResponseWriter, req *dns.Msg, method
 
 	httpResp, err := client.Do(httpReq)
 	if err != nil {
-		zap.L().Named("answer").Warn("doh resp err", zap.Uint16("id", req.Id), zap.Error(err))
+		logger.Warn("doh resp err", zap.Error(err))
 		return
 	}
 
@@ -158,20 +160,20 @@ func (upstream *UpstreamDoh) dohQuery(w dns.ResponseWriter, req *dns.Msg, method
 	case http.StatusOK: // 200
 		buf, err := ioutil.ReadAll(httpResp.Body)
 		if err != nil {
-			zap.L().Named("answer").Error("doh read http body error", zap.Uint16("id", req.Id), zap.Error(err))
+			logger.Error("doh read http body error", zap.Error(err))
 			return
 		}
 		w.Write(buf)
 	case http.StatusBadRequest: // 400
-		zap.L().Named("answer").Info("DNS query not specified or too small.", zap.Uint16("id", req.Id))
+		logger.Info("DNS query not specified or too small.")
 	case http.StatusRequestEntityTooLarge: // 413
-		zap.L().Named("answer").Info("DNS query is larger than maximum allowed DNS message size.", zap.Uint16("id", req.Id))
+		logger.Info("DNS query is larger than maximum allowed DNS message size.")
 	case http.StatusUnsupportedMediaType: // 415
-		zap.L().Named("answer").Info("Unsupported content type.", zap.Uint16("id", req.Id))
+		logger.Info("Unsupported content type.")
 	case http.StatusGatewayTimeout: // 504
-		zap.L().Named("answer").Info("Resolver timeout while waiting for the query response.", zap.Uint16("id", req.Id))
+		logger.Info("Resolver timeout while waiting for the query response.")
 	default:
-		zap.L().Named("answer").Info("Unknown http status code", zap.Int("code", httpResp.StatusCode), zap.Uint16("id", req.Id))
+		logger.Info("Unknown http status code", zap.Int("code", httpResp.StatusCode))
 	}
 }
 

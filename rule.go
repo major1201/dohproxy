@@ -122,14 +122,16 @@ func (rule *RegexRule) Matches(address string) bool {
 
 // AddRule converts a rule in raw string into Rule and appends it the handler rules
 func (handler *Handler) AddRule(text string) {
+	logger := zap.L().Named("config")
+
 	parts := strings.Fields(text)
 	if len(parts) != 2 {
-		zap.L().Named("config").Fatal("rule fields must be 2 parts", zap.Strings("fields", parts))
+		logger.Fatal("rule fields must be 2 parts", zap.Strings("fields", parts))
 	}
 
 	condition := strings.Split(parts[0], ":")
 	if len(condition) != 2 {
-		zap.L().Named("config").Fatal("rule condition must be 2 parts", zap.Strings("condition", condition))
+		logger.Fatal("rule condition must be 2 parts", zap.Strings("condition", condition))
 	}
 
 	conditionType := condition[0]
@@ -149,11 +151,11 @@ func (handler *Handler) AddRule(text string) {
 	case "regex":
 		regex, err := regexp.Compile(condition[1])
 		if err != nil {
-			zap.L().Named("config").Fatal("regex compile failed", zap.String("exp", condition[1]))
+			logger.Fatal("regex compile failed", zap.String("exp", condition[1]))
 		}
 		rule = &RegexRule{regex: regex}
 	default:
-		zap.L().Named("config").Fatal("unknown condition type", zap.String("type", conditionType))
+		logger.Fatal("unknown condition type", zap.String("type", conditionType))
 	}
 	rule.SetExpression(strings.ToLower(condition[1]))
 
@@ -164,7 +166,7 @@ func (handler *Handler) AddRule(text string) {
 		if goutils.IsIPv4(parts[1]) {
 			rule.SetStaticResult(parts[1])
 		} else {
-			zap.L().Named("config").Fatal("unknown upstream", zap.String("name", parts[1]))
+			logger.Fatal("unknown upstream", zap.String("name", parts[1]))
 		}
 	}
 

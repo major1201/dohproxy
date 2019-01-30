@@ -10,7 +10,7 @@ import (
 )
 
 // AppVer means the project's version
-const AppVer = "0.1.1"
+const AppVer = "0.1.2"
 
 type program struct {
 	cliContext *cli.Context

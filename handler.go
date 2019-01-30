@@ -18,7 +18,7 @@ func (handler *Handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 	isMatched := false
 	ruleSearchStartTime := time.Now()
 
-	// log fileds
+	// log fields
 	fields := make([]zap.Field, 6)
 	fields[0] = zap.String("from", w.RemoteAddr().Network()+"://"+w.RemoteAddr().String())
 	fields[1] = zap.String("to", w.LocalAddr().Network()+"://"+w.LocalAddr().String())
