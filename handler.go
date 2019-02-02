@@ -27,6 +27,17 @@ func (handler *Handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 	fields[3] = zap.String("question", r.Question[0].String())
 	fields[5] = zap.Uint16("id", r.Id)
 
+	// find in cache
+	if msg, found := GetCache(r.Question[0].String(), r.Id); found {
+		fields[2] = zap.String("upstream", "cache")
+		fields[4] = zap.Duration("searchtime", time.Since(ruleSearchStartTime))
+		zap.L().Named("query").Info("routing request", fields[:]...)
+
+		w.WriteMsg(msg)
+		return
+	}
+
+	// find in rules
 	for _, rule := range handler.Rules {
 		if rule.Upstream() == nil && r.Question[0].Qtype != dns.TypeA {
 			continue

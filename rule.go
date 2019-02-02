@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/major1201/dohproxy/pkg/wildcard"
 	"github.com/major1201/goutils"
 	"go.uber.org/zap"
 	"regexp"
@@ -112,7 +111,7 @@ func (rule *KeywordRule) Matches(address string) bool {
 
 // Matches returns if the address matches the wildcard rule
 func (rule *WildcardRule) Matches(address string) bool {
-	return wildcard.Match(rule.expression, strings.ToLower(address))
+	return goutils.WildcardMatch(rule.expression, strings.ToLower(address))
 }
 
 // Matches returns if the address matches the regex rule

@@ -165,6 +165,13 @@ func (upstream *UpstreamDoh) dohQuery(w dns.ResponseWriter, req *dns.Msg, method
 			return
 		}
 		w.Write(buf)
+
+		// set cache
+		replMsg := &dns.Msg{}
+		err = replMsg.Unpack(buf)
+		if err == nil {
+			SetCache(req.Question[0].String(), replMsg)
+		}
 	case http.StatusBadRequest: // 400
 		logger.Info("DNS query not specified or too small.")
 	case http.StatusRequestEntityTooLarge: // 413
@@ -189,6 +196,9 @@ func (upstream *UpstreamDNS) Query(w dns.ResponseWriter, req *dns.Msg) {
 		return
 	}
 	w.WriteMsg(r)
+
+	// set cache
+	SetCache(req.Question[0].String(), r)
 }
 
 // Query does the exact query action of an DNS-over-HTTPS upstream using HTTP GET method

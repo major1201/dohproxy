@@ -3,8 +3,9 @@ module github.com/major1201/dohproxy
 require (
 	github.com/go-yaml/yaml v2.1.0+incompatible
 	github.com/kardianos/service v0.0.0-20180910224244-b1866cf76903
-	github.com/major1201/goutils v0.2.0
+	github.com/major1201/goutils v0.3.0
 	github.com/miekg/dns v1.0.14
+	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/stretchr/testify v1.2.1
 	github.com/urfave/cli v1.20.0
 	go.uber.org/atomic v1.3.2 // indirect
