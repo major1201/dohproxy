@@ -7,8 +7,12 @@ A DNS-over-Https proxy and router
 
 ## Installation
 
+Download from the latest [release](https://github.com/major1201/dohproxy/releases) page,
+
+or install from source.
+
 ```bash
-$ go install github.com/major1201/dohproxy
+$ go get -u github.com/major1201/dohproxy
 ```
 
 ## Usage
