@@ -9,10 +9,20 @@ A DNS-over-Https proxy and router
 
 Download from the latest [release](https://github.com/major1201/dohproxy/releases) page,
 
-or install from source.
+or install from source
 
 ```bash
 $ go get -u github.com/major1201/dohproxy
+```
+
+or run with Docker
+
+```bash
+docker run -d \
+    --name dohproxy \
+    -v /etc/dohproxy:/etc/dohproxy \
+    -p 5353:53/udp \
+    major1201/dohproxy
 ```
 
 ## Usage

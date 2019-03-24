@@ -1,0 +1,13 @@
+---
+listen:
+  - type: udp
+    address: 0.0.0.0:53
+
+upstreams:
+  cloudflare:
+    type: doh-get
+    address: https://1.1.1.1/dns-query
+
+rules:
+  - wildcard:* cloudflare
+...
