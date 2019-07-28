@@ -10,8 +10,7 @@ linux/arm64 \
 windows/386 \
 windows/amd64
 
-VERSION := $(shell git describe --tags)
-BUILD := $(shell git rev-parse --short HEAD)
+VERSION := $(shell git describe --tags 2>/dev/null || (printf "v0.0.0-" && git rev-parse --short HEAD))
 PROJECTNAME := $(shell basename "$(PWD)")
 
 # Use linker flags to provide version/build settings
