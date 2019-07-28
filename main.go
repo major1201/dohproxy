@@ -9,8 +9,11 @@ import (
 	"sync"
 )
 
-// AppVer means the project's version
-const AppVer = "0.2.0"
+// Name inspects the project name
+var Name = "dohproxy"
+
+// Version inspects the project version
+var Version = "custom"
 
 type program struct {
 	cliContext *cli.Context

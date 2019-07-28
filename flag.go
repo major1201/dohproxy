@@ -8,10 +8,10 @@ import (
 
 func getApp() *cli.App {
 	app := cli.NewApp()
-	app.Name = "dohproxy"
+	app.Name = Name
 	app.HelpName = app.Name
-	app.Usage = "dohproxy -c config_file"
-	app.Version = AppVer
+	app.Usage = app.Name + " -c config_file"
+	app.Version = Version
 	app.Flags = []cli.Flag{
 		cli.BoolFlag{
 			Name:  "help, h",
